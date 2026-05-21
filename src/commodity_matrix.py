@@ -4,7 +4,8 @@ import os
 
 class CommodityMatrix:
     '''
-    Workhorse class for parsing and storing commodity coefficient data.
+    Workhorse class for parsing and storing commodity coefficient data. It is assumed that the data input is a .txt file that contains the commodity coefficients for each industry
+    with the final entry for each line being the coefficient of the solution vector. 
     '''
     def __init__(self, data_path: str) -> None:
         script_dir: str = os.path.dirname(__file__)
@@ -15,9 +16,9 @@ class CommodityMatrix:
             for line in file:
                 text_data: list[str] = line.split()
                 num_data: list[float] = []
-                for data in text_data[:-1]:
+                for data in text_data[:-1]:  ##read all but the last value into the list that will become the coefficient matrix
                     num_data.append(float(data))
-                solution_list.append(float(text_data[-1]))
+                solution_list.append(float(text_data[-1]))  ##read the last value into the list that will become the solution vector
                 data_list.append(num_data)
         self.commodity_matrix = np.array(data_list)
         self.total_production_matrix = np.array(solution_list)
@@ -35,7 +36,7 @@ class CommodityMatrix:
             prod_matrix_index += 1
         solution_vector = np.zeros(self.total_production_matrix.size)
         non_normalized_solution = solve(self.commodity_matrix, solution_vector)
-        normalize_scalar = 1/non_normalized_solution[0]
+        normalize_scalar: float = 1/non_normalized_solution[0]  ##will never be division by zero because we assume all economies are at least at replacement
         solution_index: int = 0
         for solution in non_normalized_solution:
             self.price_weights[solution_index] = solution*normalize_scalar
@@ -44,6 +45,5 @@ class CommodityMatrix:
     def solve_growth_economy()-> None:
         '''
         Method for solving the given commodity matrix for an economy with a rate of profit. The first commodity in the economy is selected as a numeraire and its solution set to 1; the rest of the commodity matrix is solved
-        with this in mind. 
+        with this in mind. Will also calculate a rate of profit in addition to the price weights.
         '''
-    
