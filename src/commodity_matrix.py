@@ -1,5 +1,5 @@
 import numpy as np
-from scipy import linalg
+from scipy.linalg import solve
 import os
 
 class CommodityMatrix:
@@ -22,14 +22,28 @@ class CommodityMatrix:
         self.commodity_matrix = np.array(data_list)
         self.total_production_matrix = np.array(solution_list)
         self.price_weights = np.empty(self.total_production_matrix.size)
-    def solve_subsistence_economy()-> None:
+
+    def solve_subsistence_economy(self)-> None:
         '''
         Method for solving the given commodity matrix for a strict subsistence economy, where the total commodity inputs for the economy for each industry are exactly the
         same as commodity outputs for each industry. The first commodity in the economy is selected as a numeraire and its price weight set to 1; the rest of the commodity matrix is solved
         with this in mind. 
         '''
+        prod_matrix_index: int = 0
+        for value in self.total_production_matrix:
+            self.commodity_matrix[prod_matrix_index, prod_matrix_index] = self.commodity_matrix[prod_matrix_index, prod_matrix_index] - value
+            prod_matrix_index += 1
+        solution_vector = np.zeros(self.total_production_matrix.size)
+        non_normalized_solution = solve(self.commodity_matrix, solution_vector)
+        normalize_scalar = 1/non_normalized_solution[0]
+        solution_index: int = 0
+        for solution in non_normalized_solution:
+            self.price_weights[solution_index] = solution*normalize_scalar
+            solution_index += 1
+        
     def solve_growth_economy()-> None:
         '''
         Method for solving the given commodity matrix for an economy with a rate of profit. The first commodity in the economy is selected as a numeraire and its solution set to 1; the rest of the commodity matrix is solved
         with this in mind. 
         '''
+    
