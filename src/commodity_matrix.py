@@ -41,7 +41,8 @@ class CommodityMatrix:
             solution_vector[solution_index] = solution_vector[solution_index]*-1 #remember that we're subtracting to get these constants!
             solution_index += 1 
         solutions = solve(simplified_matrix, solution_vector) #solve the simplified matrix
-        solution_index = 0
+        solution_index = 1
+        self.price_weights[0] = 1
         for solution in solutions:
             self.price_weights[solution_index] = solution
             solution_index += 1
