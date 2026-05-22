@@ -34,12 +34,16 @@ class CommodityMatrix:
         for value in self.total_production_matrix:
             self.commodity_matrix[prod_matrix_index, prod_matrix_index] = self.commodity_matrix[prod_matrix_index, prod_matrix_index] - value
             prod_matrix_index += 1
-        solution_vector = np.zeros(self.total_production_matrix.size)
-        non_normalized_solution = solve(self.commodity_matrix, solution_vector)
-        normalize_scalar: float = 1/non_normalized_solution[0]  ##will never be division by zero because we assume all economies are at least at replacement
+        simplified_matrix = self.commodity_matrix[1, 1:].copy() #get an array that consists of the simplified commodity matrix - drop the first equation and the first commodity from each other equation
+        solution_vector = self.commodity_matrix[1, :0].copy() #get a solution vector that consists of the coefficients of the numeraire commodity, as its price is defined as 1
         solution_index: int = 0
-        for solution in non_normalized_solution:
-            self.price_weights[solution_index] = solution*normalize_scalar
+        for solution in solution_vector:
+            solution_vector[solution_index] = solution_vector[solution_index]*-1 #remember that we're subtracting to get these constants!
+            solution_index += 1 
+        solutions = solve(simplified_matrix, solution_vector) #solve the simplified matrix
+        solution_index = 0
+        for solution in solutions:
+            self.price_weights[solution_index] = solution
             solution_index += 1
         
     def solve_growth_economy()-> None:
