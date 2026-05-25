@@ -53,3 +53,5 @@ class CommodityMatrix:
         Method for solving the given commodity matrix for an economy with a rate of profit. The first commodity in the economy is selected as a numeraire and its solution set to 1; the rest of the commodity matrix is solved
         with this in mind. Will also calculate a rate of profit in addition to the price weights.
         '''
+        #TODO: Implement growth economy method, using eigenvalue calculation.
+        pass

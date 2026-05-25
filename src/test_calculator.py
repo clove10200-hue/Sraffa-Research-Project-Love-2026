@@ -35,3 +35,23 @@ class CalculatorTests(unittest.TestCase):
         matrix.solve_subsistence_economy()
 
         self.assertTrue(np.allclose(matrix.price_weights, price_solution))
+        
+    #Skeletons of a growth test suite are here. TODO: Finish implementing, double-check solutions by hand
+    def test_growth_calculator_01(self) -> None:
+        matrix = CommodityMatrix(".../dat/surplus_1.txt")
+        price_solution = np.array()
+        growth_rate: float = 1.25
+        matrix.solve_growth_economy()
+
+        self.assertTrue(np.allclose(matrix.price_weights, price_solution))
+        self.assertAlmostEqual(matrix.growth_rate, growth_rate)
+
+    def test_growth_calculator_02(self) -> None:
+        matrix = CommodityMatrix(".../dat/surplus_2.txt")
+        price_solution = np.array()
+        growth_rate: float = 1.25
+        matrix.solve_growth_economy()
+
+        self.assertTrue(np.allclose(matrix.price_weights, price_solution))
+        self.assertAlmostEqual(matrix.growth_rate, growth_rate)
+    
