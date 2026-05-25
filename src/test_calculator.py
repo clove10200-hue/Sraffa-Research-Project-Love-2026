@@ -38,8 +38,8 @@ class CalculatorTests(unittest.TestCase):
         
     #Skeletons of a growth test suite are here. TODO: Finish implementing, double-check solutions by hand
     def test_growth_calculator_01(self) -> None:
-        matrix = CommodityMatrix(".../dat/surplus_1.txt")
-        price_solution = np.array()
+        matrix = CommodityMatrix("../dat/surplus_1.txt")
+        price_solution = np.array([1.0, 15.0])
         growth_rate: float = 1.25
         matrix.solve_growth_economy()
 

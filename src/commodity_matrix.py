@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.linalg import solve
+from scipy.optimize import fsolve
 import os
 
 class CommodityMatrix:
@@ -48,10 +49,22 @@ class CommodityMatrix:
             self.price_weights[solution_index] = solution
             solution_index += 1
         
-    def solve_growth_economy()-> None:
+    def solve_growth_economy(self)-> None:
         '''
         Method for solving the given commodity matrix for an economy with a rate of profit. The first commodity in the economy is selected as a numeraire and its solution set to 1; the rest of the commodity matrix is solved
         with this in mind. Will also calculate a rate of profit in addition to the price weights.
         '''
         #TODO: Implement growth economy method, using eigenvalue calculation.
-        pass
+        def equations(vars):
+            y, r = vars
+            eq1 = (self.commodity_matrix[0, 0]+self.commodity_matrix[0, 1]*y)*(r) - self.total_production_matrix[0]
+            eq2 = (self.commodity_matrix[1, 0]+self.commodity_matrix[1, 1]*y)*(r) - self.total_production_matrix[1]*y
+            return [eq1, eq2]
+        initial_guess = [1, 0]
+        solutions = fsolve(equations, initial_guess)
+        solution_index = 1
+        self.price_weights[0] = 1
+        for solution in solutions[:-1]:
+            self.price_weights[solution_index] = solution
+            solution_index += 1
+        self.growth_rate = solutions[-1]
