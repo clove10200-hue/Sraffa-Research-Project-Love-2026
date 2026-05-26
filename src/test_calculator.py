@@ -47,7 +47,7 @@ class CalculatorTests(unittest.TestCase):
         self.assertAlmostEqual(matrix.growth_rate, growth_rate)
 
     def test_growth_calculator_02(self) -> None:
-        matrix = CommodityMatrix(".../dat/surplus_2.txt")
+        matrix = CommodityMatrix("../dat/surplus_2.txt")
         price_solution = np.array()
         growth_rate: float = 1.25
         matrix.solve_growth_economy()
