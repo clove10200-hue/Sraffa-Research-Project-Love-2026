@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 thisdir = pathlib.Path(__file__).parent.resolve()
 DAT_DIR = thisdir.parent / "dat"   # Chris's example data files live in <repo>/dat/
-
+ACCEPTABLE_ERROR: float = 0.001
 class Economy(BaseModel):
     """A simple economy with k commodities and n industries.
 
@@ -36,6 +36,23 @@ class Economy(BaseModel):
         r = 1.0 / lam - 1.0
         return r, p
     
+    def power_iteration(self) -> tuple[float, np.ndarray]:
+        """Returns the approximations for (rate_of_profit, prices) for the input matrix M and outputs q using power iteration. Prices are normalized so the
+        first commodity has price 1."""
+
+        A = np.diag(1.0 / self.q) @ self.M  #construct initial coefficient matrix
+        x1 = np.ones(self.q.size)           #initial 'guess' - just a vector of appropriate length full of ones. TODO: a better guessing logic
+        Ax = A @ x1
+        x = Ax / np.linalg.norm(Ax)
+        rayleigh: float = Ax.dot(x1) / x1.dot(x1)
+
+        while np.linalg.norm(Ax-rayleigh*x) > abs(rayleigh)*ACCEPTABLE_ERROR: #termination criteria - the operation A*x - rayleigh*x. TODO: Ability to change error to suit user
+            x = Ax / np.linalg.norm(Ax)
+            Ax = A @ x
+            rayleigh: float = Ax.dot(x) / x.dot(x)
+
+        return rayleigh, Ax
+
     @staticmethod
     def from_file(path: pathlib.Path) -> "Economy":
         """Read a commodity file. Returns an Economy object.
