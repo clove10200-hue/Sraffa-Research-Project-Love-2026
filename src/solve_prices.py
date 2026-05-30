@@ -42,14 +42,14 @@ class Economy(BaseModel):
 
         A = np.diag(1.0 / self.q) @ self.M  #construct initial coefficient matrix
         x1 = np.ones(self.q.size)           #initial 'guess' - just a vector of appropriate length full of ones. TODO: a better guessing logic
+        x1 = x1 / np.linalg.norm(x1)
         Ax = A @ x1
-        x = Ax / np.linalg.norm(Ax)
-        rayleigh: float = Ax.dot(x1) / x1.dot(x1)
+        rayleigh: float = Ax.dot(x1) 
 
         while np.linalg.norm(Ax-rayleigh*x) > abs(rayleigh)*ACCEPTABLE_ERROR: #termination criteria - the length of the operation A*x - rayleigh*x being less than a certain percentage of the current rayleigh quotient. TODO: Ability to change error to suit user
             x = Ax / np.linalg.norm(Ax)
             Ax = A @ x
-            rayleigh = Ax.dot(x) / x.dot(x)
+            rayleigh = Ax.dot(x) 
 
         Ax = Ax / Ax[0] #normalize prices to make commodity 1 the numeraire
 
