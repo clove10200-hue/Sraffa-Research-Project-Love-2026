@@ -51,7 +51,11 @@ class Economy(BaseModel):
             Ax = A @ x
             rayleigh = Ax.dot(x) / x.dot(x)
 
-        return rayleigh, Ax
+        Ax = Ax / Ax[0] #normalize prices to make commodity 1 the numeraire
+
+        r = 1.0 / rayleigh - 1.0 #calculate approximate rate of profit from approximate eigenvalue
+
+        return r, Ax
 
     @staticmethod
     def from_file(path: pathlib.Path) -> "Economy":
