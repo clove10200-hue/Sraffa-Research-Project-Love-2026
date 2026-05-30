@@ -46,10 +46,10 @@ class Economy(BaseModel):
         x = Ax / np.linalg.norm(Ax)
         rayleigh: float = Ax.dot(x1) / x1.dot(x1)
 
-        while np.linalg.norm(Ax-rayleigh*x) > abs(rayleigh)*ACCEPTABLE_ERROR: #termination criteria - the operation A*x - rayleigh*x. TODO: Ability to change error to suit user
+        while np.linalg.norm(Ax-rayleigh*x) > abs(rayleigh)*ACCEPTABLE_ERROR: #termination criteria - the length of the operation A*x - rayleigh*x being less than a certain percentage of the current rayleigh quotient. TODO: Ability to change error to suit user
             x = Ax / np.linalg.norm(Ax)
             Ax = A @ x
-            rayleigh: float = Ax.dot(x) / x.dot(x)
+            rayleigh = Ax.dot(x) / x.dot(x)
 
         return rayleigh, Ax
 
