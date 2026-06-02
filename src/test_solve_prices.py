@@ -55,6 +55,32 @@ class EigenvalueOnlyTests(unittest.TestCase):
         residual = (economy.M @ prices) * (1.0 + r) - economy.q * prices
         self.assertLess(float(np.max(np.abs(residual))), 1e-8)
 
+class PowerIterationTests(unittest.TestCase):
+    """Test cases for the power iteration method implementation. """
+
+    def test_power_iteration_1(self) -> None:
+        power_economy = Economy.from_file(DAT_DIR / "surplus_1.txt")
+        r, prices = power_economy.power_iteration(0.001)
+        r_solution, price_solution = power_economy.solve()
+
+        self.assertGreater(r, 0.0)
+        self.assertAlmostEqual(prices[0], 1.0)
+        np.testing.assert_array_less(0.0, prices)
+
+        np.testing.assert_allclose(r, r_solution, rtol = 1e3)
+        np.testing.assert_allclose(prices, price_solution, rtol = 1e3)
+
+    def test_power_iteration_2(self) -> None:
+        power_economy = Economy.from_file(DAT_DIR / "surplus_2.txt")
+        r, prices = power_economy.power_iteration(0.001)
+        r_solution, price_solution = power_economy.solve()
+
+        self.assertGreater(r, 0.0)
+        self.assertAlmostEqual(prices[0], 1.0)
+        np.testing.assert_array_less(0.0, prices)
+
+        np.testing.assert_allclose(r, r_solution, rtol = 1e3)
+        np.testing.assert_allclose(prices, price_solution, rtol = 1e3)
 
 if __name__ == "__main__":
     unittest.main()
