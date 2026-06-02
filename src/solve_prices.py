@@ -23,6 +23,11 @@ class Economy(BaseModel):
         """Return (rate_of_profit, prices) for the input matrix M and outputs q.
 
         Prices are normalized so the first commodity has price 1.
+
+        Returns:
+            tuple(float, np.ndarray): 
+                A tuple containing an exact solution for the economy's maximum rate of profit and a NumPy vector containing relative prices.
+
         """
         A = np.diag(1.0 / self.q) @ self.M           # input coefficients: inputs per unit output
         eigvals, eigvecs = np.linalg.eig(A)
@@ -37,8 +42,18 @@ class Economy(BaseModel):
         return r, p
     
     def power_iteration(self, error: float) -> tuple[float, np.ndarray]:
-        """Returns the approximations for (rate_of_profit, prices) for the input matrix M and outputs q using power iteration. Prices are normalized so the
-        first commodity has price 1."""
+        '''
+        Returns the approximations for (rate_of_profit, prices) for the input matrix M and outputs q using power iteration. Prices are normalized so the
+        first commodity has price 1.
+        
+        Parameters:
+            error (float):
+                The allowable error for the solutions, as a float between 0 and 1.
+
+        Returns:
+            tuple(float, np.ndarray): 
+                A tuple containing an approximation for the economy's maximum rate of profit and a NumPy vector containing an approximation of relative prices. Approximates according to the allowable error.
+        '''
 
         A = np.diag(1.0 / self.q) @ self.M  #construct initial coefficient matrix
         x = np.ones(self.q.size)           #initial 'guess' - just a vector of appropriate length full of ones. TODO: a better guessing logic
