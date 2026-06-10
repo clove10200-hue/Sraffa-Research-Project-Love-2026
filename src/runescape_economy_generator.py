@@ -9,12 +9,12 @@ def write_pvm_matrix(filename: str, size: int) -> None:
     with open(current_path, "a") as file:
         potion_string = str(size*500)                       #first element in every file will be the overload potion equation. the ingredients to make potions are often dropped by bosses, so potions go into their own production.
         potion_string = potion_string+" "+str(size*300)     #bosses drop potion ingredients and food is used to kill bosses, hence they are used in production in practice.
-        potion_string = add_zeroes(potion_string, size-3)   #boss drops don't go into production of potions, so they're zero.
+        potion_string = add_zeroes(potion_string, size-2)   #boss drops don't go into production of potions, so they're zero.
         potion_string = potion_string +" "+str(size*2000)   #not chosen arbitrarily - this ensures that the total number of potions produced is larger than the amount consumed by the rest of the economy
         file.write(potion_string + "\n")
         food_string = str(size*100)                         #second line is the food equation. potions are used to kill bosses and bosses often drop food ingredients, so they're used in production.
         food_string = food_string +" "+str(size*750)        #similarly, the ingredients to make food items are often dropped by bosses, so they go into their own production.
-        food_string = add_zeroes(food_string, size-3)       
+        food_string = add_zeroes(food_string, size-2)       
         food_string = food_string +" "+str(size*3000)
         file.write(food_string + "\n")
         for _ in range(size-2):                             #this writes the rest of the matrix.
@@ -23,7 +23,7 @@ def write_pvm_matrix(filename: str, size: int) -> None:
             food_use: int = random.uniform(0, 4)            #ditto for food.
             file_string = str(multiplier*potion_use)
             file_string = file_string + " " + str(multiplier*food_use)
-            file_string = add_zeroes(file_string, size-3)
+            file_string = add_zeroes(file_string, size-2)
             file_string = file_string + " " + str(multiplier)
             file.write(file_string + "\n")
 
@@ -36,6 +36,7 @@ def add_zeroes(string:str, num_zeroes:int) -> str:
         string = string + " 0" 
     return string
 
+write_pvm_matrix("test_economy_10.txt", 10)
 write_pvm_matrix("test_economy_100.txt", 100)
 write_pvm_matrix("test_economy_1000.txt", 1000)
 write_pvm_matrix("test_economy_5000.txt", 5000)
