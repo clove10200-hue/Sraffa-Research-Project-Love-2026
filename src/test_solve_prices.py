@@ -83,5 +83,53 @@ class PowerIterationTests(unittest.TestCase):
         np.testing.assert_allclose(r, r_solution, rtol = 1e3)
         np.testing.assert_allclose(prices, price_solution, rtol = 1e3)
 
+    def test_power_iteration_3(self) -> None:
+        power_economy = Economy.from_file(DAT_DIR / "test_economy_10.txt")
+        r, prices = power_economy.power_iteration(0.001)
+        r_solution, price_solution = power_economy.solve()
+
+        self.assertGreater(r, 0.0)
+        self.assertAlmostEqual(prices[0], 1.0)
+        np.testing.assert_array_less(0.0, prices)
+
+        np.testing.assert_allclose(r, r_solution, rtol = 1e3)
+        np.testing.assert_allclose(prices, price_solution, rtol = 1e3)
+
+    def test_power_iteration_4(self) -> None:
+        power_economy = Economy.from_file(DAT_DIR / "test_economy_100.txt")
+        r, prices = power_economy.power_iteration(0.001)
+        r_solution, price_solution = power_economy.solve()
+
+        self.assertGreater(r, 0.0)
+        self.assertAlmostEqual(prices[0], 1.0)
+        np.testing.assert_array_less(0.0, prices)
+
+        np.testing.assert_allclose(r, r_solution, rtol = 1e3)
+        np.testing.assert_allclose(prices, price_solution, rtol = 1e3)
+    
+    def test_power_iteration_5(self) -> None:
+        power_economy = Economy.from_file(DAT_DIR / "test_economy_1000.txt")
+        r, prices = power_economy.power_iteration(0.001)
+        r_solution, price_solution = power_economy.solve()
+
+        self.assertGreater(r, 0.0)
+        self.assertAlmostEqual(prices[0], 1.0)
+        np.testing.assert_array_less(0.0, prices)
+
+        np.testing.assert_allclose(r, r_solution, rtol = 1e3)
+        np.testing.assert_allclose(prices, price_solution, rtol = 1e3)
+    
+    def test_power_iteration_6(self) -> None:
+        power_economy = Economy.from_file(DAT_DIR / "test_economy_5000.txt")
+        r, prices = power_economy.power_iteration(0.001)
+        r_solution, price_solution = power_economy.solve()
+
+        self.assertGreater(r, 0.0)
+        self.assertAlmostEqual(prices[0], 1.0)
+        np.testing.assert_array_less(0.0, prices)
+
+        np.testing.assert_allclose(r, r_solution, rtol = 1e3)
+        np.testing.assert_allclose(prices, price_solution, rtol = 1e3)
+
 if __name__ == "__main__":
     unittest.main()

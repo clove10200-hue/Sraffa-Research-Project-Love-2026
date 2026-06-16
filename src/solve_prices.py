@@ -72,6 +72,19 @@ class Economy(BaseModel):
 
         return r, Ax
 
+    def condition_number(self) -> float:
+        '''
+        Test and debugging method for finding the condition number of an economy's coefficient matrix. Important for numerical
+        stability concerns.
+
+        Returns:
+            float: 
+                A float representing the condition number of the coefficient matrix A.
+        '''
+        A = np.diag(1.0 / self.q) @ self.M
+        cond_num: float = np.linalg.cond(A)
+        return cond_num
+    
     @staticmethod
     def from_file(path: pathlib.Path) -> "Economy":
         """Read a commodity file. Returns an Economy object.
