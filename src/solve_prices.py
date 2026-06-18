@@ -85,6 +85,26 @@ class Economy(BaseModel):
         cond_num: float = np.linalg.cond(A)
         return cond_num
     
+    def add_error(self, error: float) -> "Economy":
+        '''
+        Method for adding a random error to each element of the coefficient matrix. Returns a new economy object that contains the new M and q matrices with error introduced.
+        '''
+        rand = np.random.default_rng()
+        A = error*self.M
+        B = error*self.q
+        with np.nditer(A, op_flags=['readwrite']) as it:
+            for element in it:
+                random = rand.random()
+                sign = rand.choice([-1, 1], 1)
+                element[...] =+ random*element*sign
+        with np.nditer(B, op_flags=['readwrite']) as it:
+            for element in it:
+                random = rand.random()
+                sign = rand.choice([-1, 1], 1)
+                element[...] =+ random*element*sign
+        
+        return Economy(names=self.names, M=self.M + A, q=self.q + B)
+    
     @staticmethod
     def from_file(path: pathlib.Path) -> "Economy":
         """Read a commodity file. Returns an Economy object.
