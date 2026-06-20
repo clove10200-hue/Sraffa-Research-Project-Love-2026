@@ -33,7 +33,12 @@ def add_zeroes(string:str, num_zeroes:int) -> str:
     of zeroes to append, returns that string with the zeroes appened.
     """
     for _ in range(num_zeroes):
-        string = string + " 0" 
+        prob = random.uniform(0, 1)
+        if prob < 1/num_zeroes:
+            number = random.randint(1, 3)
+            string = string + " " + str(number)
+        else:
+            string = string + " 0"
     return string
 
 write_pvm_matrix("test_economy_10.txt", 10)

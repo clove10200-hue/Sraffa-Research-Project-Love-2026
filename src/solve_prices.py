@@ -94,6 +94,8 @@ class Economy(BaseModel):
         B = error*self.q
         with np.nditer(A, op_flags=['readwrite']) as it:
             for element in it:
+                if element == 0:
+                    continue
                 random = rand.random()
                 sign = rand.choice([-1, 1], 1)
                 element[...] =+ random*element*sign
@@ -104,6 +106,12 @@ class Economy(BaseModel):
                 element[...] =+ random*element*sign
         
         return Economy(names=self.names, M=self.M + A, q=self.q + B)
+    
+    def perturb(self, error):
+        mask = self.M != 0
+        delta_M = np.random.uniform(-error, error, size=self.M.shape) * mask
+        delta_q = np.random.uniform(-error, error, size=self.q.shape) * self.q
+        return Economy(names=self.names, M=self.M + delta_M, q=self.q + delta_q)
     
     @staticmethod
     def from_file(path: pathlib.Path) -> "Economy":
