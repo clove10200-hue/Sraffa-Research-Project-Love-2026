@@ -20,45 +20,35 @@ Run scripts in the `src` directory using uv:
 uv run src/solve_prices.py
 ```
 
-# Runescape PvM Economy Dataset Generator Readme
+# Runescape PvM Economy Model Readme
 
 ## Intent
 
-Take in a data structure of drop rates and item consumption rates for boss drops, output a file containing the Sraffan matrix M and q
-for this PvM economy, ready to be processed by the price calculator.
+Take in a data structure of a file containing the Sraffan matrix M and q for this PvM economy and output relative price and profit rate data for that economy. The model should be fast and not particularly sensitive to measurement or rounding errors.
 
 ## Structure
 
-Input file for commodity consumption will contain a list of boss drops, their drop rate, and the average number of overload doses, sailfin soups, and armor needed for each kill,
-Like so:
+The dataset is currently a text file that contains each equation for an 'industry' in a Sraffan economy as lines in the text file, arranged such that the sequential numbers correspond to the coefficients of the equation and the final entry of each line is the solution coefficient of that equation.
 
-Seismic_Wand 0.0005 1.25 2.20
-Saradomin_Godsword 0.001 0.25 0.2
-Sirenic_Hauberk 0.0001 1.0 2.0
-ect.
-
-While the input file for the commodity output vector will be similar, but derived from market data, like so:
-
-Seismic_Wand 112
-Saradomin_Godsword 345
-Sirenic_Hauberk 54
-ect.
+The dataset used by the extant model are test dataset derived from a heuristic argument regarding how the Runescape PvM economy functions(namely potions and food being spent as commodities sold on Runescape's market to 'produce' boss drops that are themselves sold on the market for profit). The specific data required for a Sraffan matrix - the specific amounts of commodities spent for each individual
 
 ## Basic Goods
 
-The Sraffan basic goods under consideration in this model will be doses of overload potion and sailfin soup, the gold standards for PvM consumables. The right-hand side coefficient of these equations will be found by utilizing market volume data for the Grand Exchange for those items over a given period.
-However, because overload potions are not directly sold on the open player market, an approximation will need to be made using its ingredients instead, which are directly sold.
-Example: 100,000 doses overload potion, 20,000 sailfin soup, ..... , 0 Saradomin Godsword -> 300,000 doses overload potion(note: calculated from overload ingredients sold on grand exchange)
+Sraffan basic goods are a commodity that is used in the production of every other commodity in the economy, either directly or indirectly. The nonstandard nature of production in Runescape makes such a good difficult to identify for the entire economy - iron is not actually used to produce, say, wood as it would be in the real world. However, by focusing on specific sections of the Runescape economy, a set of basic goods can be identified, in that in the Player versus Monster(PvM) economy a certain set of consumables are almost always used by players in order to do so.
+
+The Sraffan basic goods under consideration in this model will be doses of overload potion and sailfin soup, the gold standards for PvM consumables.
+
+(A note: overload potions are not directly sold on the open player market, which would normally preclude them from being a commodity at all. However, its ingredients are sellable on the open market, and thus overload potions could still be included by using the equivalent equations for the production and sale of the ingredients. For simplicity, this model will consider a simplified, condensed equation for overload potions as though they could be sold directly.)
+
+Example: 100,000 doses overload potion, 20,000 sailfin soup, ..... , 0 Saradomin Godsword -> 300,000 doses overload potion
 
 ## Non-basic Goods
 
-The boss drops will account as non-basic goods in the Sraffan framework and their equations will be calculated as follows. Each boss drop will have its right-hand side calculated from market volume data, something that is made publicly available to players. The left-hand side will start with the assumed amount of each basic good needed for one boss kill(eg 1 overload, 2 sailfins) and then each term will be multiplied by the inverse of the boss drop rate(i.e. if rate is 1/50 then it becomes 50 overload, 100 sailfins -> 1 boss drop). Then the entire equation will be multiplied by the amount of the drop sold from the market data(i.e. if 100 were sold from the previous example then it becomes 5,000 overload, 10,000 sailfins, 500 armor repairs -> 1 boss drop). All other coefficients are assumed to be zero as no other goods are _directly_ consumed in the boss killing production process.
+Non-basic goods are a commodity that is not used in the production of every other commodity in the economy, either directly or indirectly. Such a good is 'segmented off' from the rest of the economy and changes in the industry that produces such a good only affects the relative prices of the commodities it is linked to in production.
 
-Therefore, the inputs this generator will need will be as such:
+In reality, this is a useful property, because it can sometimes be difficult to tell whether or not a good is basic or non-basic, and to what extent it is integrated into the economy if it is non-basic. It can be useful for developers to become aware of how much the wider economy will or will not change by a change in, say, drop rate for a boss drop.
 
-1. A text matrix of market volume data for overload potion ingredients, sailfin soup, and boss armor drops
-2. A text matrix of boss drop names, their droprates, and the amounts of each basic good they consume for each drop.
-   The generator will then ouput a text file containing the Sraffan equation matrix for this PvM economy, ready to be processed by the calculator in solve_prices.py
+The left-hand side of such an equation will start with the assumed amount of each basic good needed for one boss kill(eg 1 overload, 2 sailfins) and then each term will be multiplied by the inverse of the boss drop rate(i.e. if rate is 1/50 then it becomes 50 overload, 100 sailfins -> 1 boss drop). Then the entire equation will be multiplied by the amount of the drop sold from the market data(i.e. if 100 were sold from the previous example then it becomes 5,000 overload, 10,000 sailfins -> 100 boss drop). In the extant model, test datasets will be calculated in a way that emulates this process, by selecting a random number to represent the 'average' number of potions and food items needed to kill a boss, setting its solution coefficient to zero, and then multiplying the entire equation by some integer to represent the total number of boss drops collected in a certain production period.
 
 ## Possibilities for extentions in the future
 

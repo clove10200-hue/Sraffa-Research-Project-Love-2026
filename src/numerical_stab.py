@@ -28,12 +28,12 @@ matrix_5000 = Economy.from_file(DAT_DIR / "test_economy_5000.txt")
 #print(f"Unaltered 100-element matrix R: {r_100} \n")
 #print(f"Altered 100-element matrix R: {ra_100} \n")
 
-r_100, p_1000 = matrix_100.power_iteration(0.001)
+r_5000, p_5000 = matrix_5000.power_iteration(0.001)
 
 error_r_list: list[float] = []
 for x in range(50):
-    error_100 = matrix_100.perturb(0.01)
-    error_r, error_p = error_100.power_iteration(0.001)
+    error_5000 = matrix_5000.perturb(0.01)
+    error_r, error_p = error_5000.power_iteration(0.001)
     error_r_list.append(error_r)
 average = sum(error_r_list)/50
 error_deviation_list: list[float] = []
@@ -42,7 +42,7 @@ for value in error_r_list:
     error_deviation_list.append(deviation)
 std_dev = (sum(error_deviation_list)/50)**0.5
 
-print(f"The true r value is: {r_100} \n")
+print(f"The true r value is: {r_5000} \n")
 print(f"The list of error r values are: {error_r_list} \n" )
 print(f"The average error value for r is: {average} \n")
 print(f"The standard deviation of the value r is: {std_dev}")
