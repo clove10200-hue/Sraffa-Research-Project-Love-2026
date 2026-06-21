@@ -24,7 +24,13 @@ uv run src/solve_prices.py
 
 ## Intent
 
-Take in a data structure of a file containing the Sraffan matrix M and q for this PvM economy and output relative price and profit rate data for that economy. The model should be fast and not particularly sensitive to measurement or rounding errors.
+Take in a data structure of a file containing the Sraffan matrix M and q for this PvM economy and output relative price and profit rate data for that economy. The model should be fast and not particularly sensitive to measurement or rounding errors. Sraffan matrices can be further modeled as an eigenvalue problem - the rate of profit is contained within its coefficient matrix's dominant eigenvalue, and its corresponding eigenvector contains the relative prices for that economy, corresponding to each commodity. For this model's purposes, due to the following properties of a sraffan matrix:
+
+1. Nonsymmetric
+2. Containing entirely non-negative real values as entries
+3. Large and sparse, particularly as the matrix gets very, very large
+
+The algorithm determined to be most useful was power iteration. The main drawbacks of power iteration were determined to be irrelevant, as only the dominant eigenvalue of the matrix is of interest and the fact the model only returns an approximation rather than the exact value is of little concern due to the qualitiative nature of the model's utility - it is meant to provide useful information for informing game developers about the consequences of design decisions on game economies, not provide precise values for a mathematical proof.
 
 ## Structure
 
